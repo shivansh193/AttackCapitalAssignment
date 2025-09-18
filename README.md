@@ -92,7 +92,7 @@ MEM0_API_KEY="<YOUR_MEM0_API_KEY>" # Optional, falls back to local JSON
 
 5.  **Run the agent:**
     ```bash
-    python main.py
+     python main.py connect --room "your-roomId"
     ```
 
     The agent will connect to your LiveKit room and wait for messages.
