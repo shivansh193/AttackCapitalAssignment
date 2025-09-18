@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Chat Agent
+
+This project is a full-stack chat application that integrates a Gemini-powered AI agent into a LiveKit-based chat room. The AI agent can remember conversation history and respond to user mentions.
+
+## Technologies Used
+
+### Frontend
+
+-   [Next.js](https://nextjs.org/)
+-   [React](https://reactjs.org/)
+-   [TypeScript](https://www.typescriptlang.org/)
+-   [LiveKit React SDK](https://docs.livekit.io/sdk/react/)
+-   [Tailwind CSS](https://tailwindcss.com/)
+
+### Backend
+
+-   [Python](https://www.python.org/)
+-   [LiveKit Agents Framework](https://docs.livekit.io/agents/)
+-   [Google Gemini](https://deepmind.google/technologies/gemini/)
+-   [Mem0 (for memory)](https://mem0.ai/)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+-   Node.js and npm
+-   Python 3.9+
+-   LiveKit account and project credentials (API Key, Secret, URL)
+-   Google Gemini API Key
+-   (Optional) Mem0 API Key for persistent memory
+
+### Environment Variables
+
+Create a `.env.local` file in the root directory for the frontend, and a `.env` file inside the `backend` directory for the agent.
+
+#### Frontend (`.env.local`)
+```
+# LiveKit Credentials
+NEXT_PUBLIC_LIVEKIT_URL="<YOUR_LIVEKIT_URL>"
+LIVEKIT_API_KEY="<YOUR_LIVEKIT_API_KEY>"
+LIVEKIT_API_SECRET="<YOUR_LIVEKIT_API_SECRET>"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### Backend (`backend/.env`)
+```
+# LiveKit Credentials
+LIVEKIT_URL="<YOUR_LIVEKIT_URL>"
+LIVEKIT_API_KEY="<YOUR_LIVEKIT_API_KEY>"
+LIVEKIT_API_SECRET="<YOUR_LIVEKIT_API_SECRET>"
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# AI Service Credentials
+GEMINI_API_KEY="<YOUR_GEMINI_API_KEY>"
+MEM0_API_KEY="<YOUR_MEM0_API_KEY>" # Optional, falls back to local JSON
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Setup and Running
 
-## Learn More
+### Frontend
 
-To learn more about Next.js, take a look at the following resources:
+1.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2.  **Run the development server:**
+    ```bash
+    npm run dev
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    The application will be available at [http://localhost:3000](http://localhost:3000).
 
-## Deploy on Vercel
+### Backend
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1.  **Navigate to the backend directory:**
+    ```bash
+    cd backend
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2.  **Create a virtual environment:**
+    ```bash
+    python -m venv venv
+    ```
+
+3.  **Activate the virtual environment:**
+    -   Windows: `venv\Scripts\activate`
+    -   macOS/Linux: `source venv/bin/activate`
+
+4.  **Install Python dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+5.  **Run the agent:**
+    ```bash
+    python main.py
+    ```
+
+    The agent will connect to your LiveKit room and wait for messages.

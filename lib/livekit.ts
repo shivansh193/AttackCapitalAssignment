@@ -59,15 +59,25 @@ export class LiveKitClient {
   }
 }
 
-export const generateToken = async (roomName: string, username: string): Promise<string> => {
-  // In production, this should call your backend to generate a token
-  // For now, returning a placeholder
-  const response = await fetch('/api/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ roomName, username })
-  });
+// lib/livekit.ts
+export async function generateToken(roomName: string, username: string): Promise<string> {
+    const response = await fetch('/api/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ roomName, username }),
+    });
   
-  const { token } = await response.json();
-  return token;
-};
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to generate token: ${response.status} ${errorText}`);
+    }
+  
+    const data = await response.json();
+    if (!data.token) {
+      throw new Error('No token received from server');
+    }
+  
+    return data.token;
+  }

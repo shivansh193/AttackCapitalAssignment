@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Message, Participant, ChatState } from '../../lib/types';
 import { LiveKitClient, generateToken } from '../../lib/livekit';
 
@@ -13,6 +13,8 @@ export const useChat = (roomId: string, username: string) => {
   
   const [isSending, setIsSending] = useState(false);
   const [client, setClient] = useState<LiveKitClient | null>(null);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const hasWelcomed = useRef(false);
 
   const addMessage = useCallback((message: Omit<Message, 'id' | 'timestamp'>) => {
     const newMessage: Message = {
@@ -46,58 +48,68 @@ export const useChat = (roomId: string, username: string) => {
         isAI: false
       };
 
-      // Add the message to local state immediately
       addMessage(messageData);
-
-      // Send to LiveKit room
       client.sendMessage(messageData);
 
     } catch (error) {
       console.error('Failed to send message:', error);
-      // Could add error handling here (e.g., show toast notification)
     } finally {
       setIsSending(false);
     }
   }, [client, chatState.isConnected, username, addMessage, isSending]);
 
   const connect = useCallback(async () => {
+    // Prevent multiple simultaneous connection attempts
+    if (isConnecting || chatState.isConnected) {
+      console.log('Connection already in progress or established');
+      return;
+    }
+
+    setIsConnecting(true);
+    
     try {
+      console.log('Attempting connection with:', { roomId, username });
+
       const livekitClient = new LiveKitClient();
 
-      // Set up message handler
       livekitClient.onMessage((messageData) => {
-        // Don't add messages from current user (already added locally)
         if (messageData.sender !== username) {
           addMessage(messageData);
         }
       });
 
-      // Set up participant handler
       livekitClient.onParticipants(updateParticipants);
 
-      // Generate token and connect
       const token = await generateToken(roomId, username);
-      const wsUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL || 'wss://your-livekit-server.com';
+      const wsUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL || "";
+      
+      if (!wsUrl) {
+        throw new Error("NEXT_PUBLIC_LIVEKIT_URL is not defined");
+      }
       
       await livekitClient.connect(wsUrl, token);
-
       setClient(livekitClient);
       setChatState(prev => ({ ...prev, isConnected: true }));
 
-      // Add welcome message from AI
-      setTimeout(() => {
-        addMessage({
-          text: `Welcome to the room, ${username}! I'm your AI assistant. How can I help you today?`,
-          sender: 'AI Assistant',
-          isAI: true
-        });
-      }, 1000);
+      // Only show welcome message once
+      if (!hasWelcomed.current) {
+        setTimeout(() => {
+          addMessage({
+            text: `Welcome to the room, ${username}! I'm your AI assistant. How can I help you today?`,
+            sender: 'AI Assistant',
+            isAI: true
+          });
+          hasWelcomed.current = true;
+        }, 1000);
+      }
 
     } catch (error) {
       console.error('Failed to connect:', error);
       setChatState(prev => ({ ...prev, isConnected: false }));
+    } finally {
+      setIsConnecting(false);
     }
-  }, [roomId, username, addMessage, updateParticipants]);
+  }, [roomId, username, addMessage, updateParticipants, isConnecting, chatState.isConnected]);
 
   const disconnect = useCallback(() => {
     if (client) {
@@ -107,21 +119,40 @@ export const useChat = (roomId: string, username: string) => {
     setChatState(prev => ({ ...prev, isConnected: false }));
   }, [client]);
 
-  // Auto-connect when hook is initialized
+  // FIXED: Only connect once when roomId and username are first available
   useEffect(() => {
+    // Guard clause - don't connect if required params are missing
+    if (!roomId || !username) {
+      console.log('Waiting for roomId and username...', { roomId, username });
+      return;
+    }
+
+    // Don't reconnect if already connected
+    if (chatState.isConnected) {
+      console.log('Already connected, skipping...');
+      return;
+    }
+
+    console.log('Starting connection process...', { roomId, username });
     connect();
 
-    // Cleanup on unmount
     return () => {
-      disconnect();
+      if (client) {
+        console.log('Cleaning up connection...');
+        client.disconnect();
+        setClient(null);
+        setChatState(prev => ({ ...prev, isConnected: false }));
+        hasWelcomed.current = false;
+      }
     };
-  }, [roomId, username]);
+  }, [roomId, username]); // Removed connect and disconnect from dependencies
 
   return {
     ...chatState,
     sendMessage,
     connect,
     disconnect,
-    isSending
+    isSending,
+    isConnecting
   };
 };

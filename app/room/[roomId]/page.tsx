@@ -1,11 +1,13 @@
+"use client"
 import { NextPage } from 'next';
-import { useRouter } from 'next/router';
+import { useRouter, useParams } from 'next/navigation';
 import Head from 'next/head';
-import ChatRoom from '../components/ChatRoom';
+import ChatRoom from '../../components/ChatRoom';
+
 
 const RoomPage: NextPage = () => {
   const router = useRouter();
-  const { roomId } = router.query;
+  const { roomId } = useParams();
 
   if (!roomId || typeof roomId !== 'string') {
     return (

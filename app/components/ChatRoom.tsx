@@ -1,9 +1,11 @@
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useChat } from '../hooks/useChat';
+import { useMockChat } from '../hooks/useMockChat';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import ParticipantList from './ParticpantList';
+import DemoBanner from './DemoBanner';
 
 interface ChatRoomProps {
   roomId: string;
@@ -24,13 +26,20 @@ const ChatRoom = ({ roomId }: ChatRoomProps) => {
     setUsername(storedUsername);
   }, [router]);
 
+  // Use mock chat for development (change to useChat when backend is ready)
+  const isDevelopment = false;
+  const chatHook = isDevelopment ? useMockChat : useChat;
+
+  // ✅ Always call the hook
   const {
     messages,
     participants,
     isConnected,
     sendMessage,
-    isSending
-  } = useChat(roomId, username);
+    isSending,
+  } = chatHook(roomId, username || ""); // pass empty string until ready
+  console.log(roomId,",", username)
+
 
   const handleLeaveRoom = () => {
     sessionStorage.removeItem('username');
@@ -92,6 +101,9 @@ const ChatRoom = ({ roomId }: ChatRoomProps) => {
           </button>
         </div>
       </div>
+
+      {/* Demo Banner */}
+      {isDevelopment && <DemoBanner />}
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">

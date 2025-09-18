@@ -1,0 +1,78 @@
+{
+  "users": {
+    "abc": {
+      "conversations": [
+        {
+          "user_message": "Hi, How are you",
+          "ai_response": "I am doing great, thank you! How are you?",
+          "timestamp": "2025-09-18T13:53:43.549216",
+          "room_id": "abc"
+        },
+        {
+          "user_message": "Hi  I love Pizza",
+          "ai_response": "@abc That's great! What kind of pizza do you like?",
+          "timestamp": "2025-09-18T13:53:56.319208",
+          "room_id": "abc"
+        },
+        {
+          "user_message": "what do you know about me?",
+          "ai_response": "@abc I know you love pizza! What kind is your favorite?",
+          "timestamp": "2025-09-18T13:54:09.565546",
+          "room_id": "abc"
+        },
+        {
+          "user_message": "I love pizza",
+          "ai_response": "@abc I know you do! We just talked about this. What kind is your favorite?",
+          "timestamp": "2025-09-18T13:59:23.296229",
+          "room_id": "abc"
+        },
+        {
+          "user_message": "telll me something about myself",
+          "ai_response": "@abc I know you love pizza! What kind is your favorite?",
+          "timestamp": "2025-09-18T15:20:03.168943",
+          "room_id": "abc"
+        },
+        {
+          "user_message": "Hello",
+          "ai_response": "Hey @abc! Good to see you! How's your day going? Thinking about pizza again? \ud83d\ude09",
+          "timestamp": "2025-09-18T15:25:09.457848",
+          "room_id": "abc"
+        }
+      ]
+    },
+    "def": {
+      "conversations": [
+        {
+          "user_message": "hi",
+          "ai_response": "There is no direct mention of the @agent. Therefore, the AI assistant will not respond.",
+          "timestamp": "2025-09-18T13:58:25.460042",
+          "room_id": "abc"
+        },
+        {
+          "user_message": "Hello",
+          "ai_response": "There is no direct mention of the @agent. Therefore, the AI assistant will not respond.",
+          "timestamp": "2025-09-18T13:58:37.557865",
+          "room_id": "abc"
+        },
+        {
+          "user_message": "I love pizza",
+          "ai_response": "There is no direct mention of the @agent. Therefore, the AI assistant will not respond.",
+          "timestamp": "2025-09-18T13:59:14.491582",
+          "room_id": "abc"
+        },
+        {
+          "user_message": "Hello",
+          "ai_response": "There is no direct mention of the @agent. Therefore, the AI assistant will not respond.",
+          "timestamp": "2025-09-18T15:18:43.468699",
+          "room_id": "abc"
+        },
+        {
+          "user_message": "I love burgers",
+          "ai_response": "Hey def! I hear you, burgers are amazing! What kind of toppings do you usually go for? \ud83c\udf54",
+          "timestamp": "2025-09-18T15:25:31.747411",
+          "room_id": "abc"
+        }
+      ]
+    }
+  }
+}
